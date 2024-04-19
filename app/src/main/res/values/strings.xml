@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CryptoCompare</string>
+    <string name="syms">%1$s / %2$s</string>
+    <string name="last_update_time">Время последнего обновления: %1$s</string>
+</resources>
