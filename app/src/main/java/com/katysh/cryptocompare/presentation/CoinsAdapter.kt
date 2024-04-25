@@ -3,19 +3,16 @@ package com.katysh.cryptocompare.presentation
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.katysh.cryptocompare.R
 import com.katysh.cryptocompare.databinding.PriceItemBinding
 import com.katysh.cryptocompare.domain.entity.CoinInfo
+import com.katysh.cryptocompare.presentation.CoinsAdapter.CoinViewHolder
 import com.squareup.picasso.Picasso
 
-class CoinsAdapter(private val context: Context) : Adapter<CoinsAdapter.CoinViewHolder>() {
-    var coinInfoList: List<CoinInfo> = listOf()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+class CoinsAdapter(private val context: Context) :
+    ListAdapter<CoinInfo, CoinViewHolder>(CoinDiffCallback) {
 
     var onCoinClickListener: OnCoinClickListener? = null
 
@@ -29,10 +26,8 @@ class CoinsAdapter(private val context: Context) : Adapter<CoinsAdapter.CoinView
         )
     }
 
-    override fun getItemCount() = coinInfoList.size
-
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
-        val priceInfo = coinInfoList[position]
+        val priceInfo = getItem(position)
         with(holder.binding) {
             with(priceInfo) {
                 tvPrice.text = price
