@@ -1,21 +1,15 @@
-package com.katysh.cryptocompare.pojo
+package com.katysh.cryptocompare.data.web.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.katysh.cryptocompare.utils.convertTimeStampToTime
-import com.katysh.cryptocompare.web.ApiFactory.BASE_IMAGE_URL
 
-@Entity(tableName = "price_info")
-data class PriceInfo(
+data class CoinInfoDTO(
     @SerializedName("TYPE")
     @Expose
     val type: String?,
     @SerializedName("MARKET")
     @Expose
     val market: String?,
-    @PrimaryKey
     @SerializedName("FROMSYMBOL")
     @Expose
     val fromSymbol: String,
@@ -127,12 +121,4 @@ data class PriceInfo(
     @SerializedName("IMAGEURL")
     @Expose
     val imageUrl: String?
-) {
-    fun getFormattedTime(): String {
-        return convertTimeStampToTime(lastUpdate)
-    }
-
-    fun getFullImageUrl(): String {
-        return BASE_IMAGE_URL + imageUrl
-    }
-}
+)

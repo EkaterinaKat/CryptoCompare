@@ -1,11 +1,11 @@
-package com.katysh.cryptocompare.pojo
+package com.katysh.cryptocompare.data.web.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CoinInfoResponse (
+data class CoinNameListDTO(
     @SerializedName("Data")
     @Expose
-    val data: List<Datum>?=null
+    val names: List<CoinNameContainerDTO>? = null
 
 )

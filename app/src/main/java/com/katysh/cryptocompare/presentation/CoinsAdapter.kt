@@ -1,4 +1,4 @@
-package com.katysh.cryptocompare
+package com.katysh.cryptocompare.presentation
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,11 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.katysh.cryptocompare.pojo.PriceInfo
+import com.katysh.cryptocompare.R
+import com.katysh.cryptocompare.domain.entity.CoinInfo
 import com.squareup.picasso.Picasso
 
 class CoinsAdapter(private val context: Context) : Adapter<CoinsAdapter.CoinViewHolder>() {
-    var priceInfoList: List<PriceInfo> = listOf()
+    var coinInfoList: List<CoinInfo> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -28,16 +29,17 @@ class CoinsAdapter(private val context: Context) : Adapter<CoinsAdapter.CoinView
         )
     }
 
-    override fun getItemCount() = priceInfoList.size
+    override fun getItemCount() = coinInfoList.size
 
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
-        val priceInfo = priceInfoList[position]
+        val priceInfo = coinInfoList[position]
         with(holder) {
             with(priceInfo) {
                 tvPrice.text = price
                 tvSymbols.text = context.getString(R.string.syms, fromSymbol, toSymbol)
-                tvLastUpdate.text = context.getString(R.string.last_update_time, getFormattedTime())
-                Picasso.get().load(getFullImageUrl()).into(imageView)
+                tvLastUpdate.text =
+                    context.getString(R.string.last_update_time, lastUpdate)
+                Picasso.get().load(imageUrl).into(imageView)
                 itemView.setOnClickListener {
                     onCoinClickListener?.execute(this)
                 }
@@ -53,6 +55,6 @@ class CoinsAdapter(private val context: Context) : Adapter<CoinsAdapter.CoinView
     }
 
     interface OnCoinClickListener {
-        fun execute(priceInfo: PriceInfo)
+        fun execute(coinInfo: CoinInfo)
     }
 }

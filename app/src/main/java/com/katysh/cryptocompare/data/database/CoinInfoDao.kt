@@ -1,21 +1,20 @@
-package com.katysh.cryptocompare.database
+package com.katysh.cryptocompare.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.katysh.cryptocompare.pojo.PriceInfo
 
 @Dao
-interface PriceInfoDao {
+interface CoinInfoDao {
 
     @Query("SELECT * FROM price_info ORDER BY lastUpdate DESC")
-    fun getPriceList():LiveData<List<PriceInfo>>
+    fun getCoinInfo(): LiveData<List<CoinInfoDBM>>
 
     @Query("SELECT * FROM price_info WHERE fromSymbol == :fSym LIMIT 1")
-    fun getPriceInfoAboutCoin(fSym:String):LiveData<PriceInfo>
+    fun getCoinInfo(fSym: String): LiveData<CoinInfoDBM>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPriceList(priceList:List<PriceInfo>)
+    suspend fun insertPriceList(priceList: List<CoinInfoDBM>)
 }
