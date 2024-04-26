@@ -3,6 +3,7 @@ package com.katysh.cryptocompare.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.katysh.cryptocompare.R
 import com.katysh.cryptocompare.databinding.ActivityPriceListBinding
 import com.katysh.cryptocompare.domain.entity.CoinInfo
 
@@ -21,9 +22,11 @@ class PriceListActivity : AppCompatActivity() {
         val adapter = CoinsAdapter(this)
         adapter.onCoinClickListener = object : CoinsAdapter.OnCoinClickListener {
             override fun execute(coinInfo: CoinInfo) {
-                startActivity(
-                    CoinDetailActivity.newIntent(this@PriceListActivity, coinInfo.fromSymbol)
-                )
+                if (isOnePaneMode()) {
+                    launchDetailActivity(coinInfo.fromSymbol)
+                } else {
+                    launchDetailFragment(coinInfo.fromSymbol)
+                }
             }
         }
         binding.rvPriceList.adapter = adapter
@@ -33,4 +36,18 @@ class PriceListActivity : AppCompatActivity() {
         }
     }
 
+    private fun launchDetailActivity(fSym: String) {
+        startActivity(CoinDetailActivity.newIntent(this@PriceListActivity, fSym))
+    }
+
+    private fun launchDetailFragment(fSym: String) {
+        supportFragmentManager.popBackStack()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, CoinDetailFragment.newInstance(fSym))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun isOnePaneMode() = binding.fragmentContainer == null
 }

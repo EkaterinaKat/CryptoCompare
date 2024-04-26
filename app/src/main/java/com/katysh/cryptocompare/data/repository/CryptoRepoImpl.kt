@@ -12,9 +12,7 @@ import com.katysh.cryptocompare.domain.entity.CoinInfo
 import com.katysh.cryptocompare.domain.repo.CryptoRepo
 import kotlinx.coroutines.delay
 
-class CryptoRepoImpl(
-    private val application: Application
-) : CryptoRepo {
+class CryptoRepoImpl(application: Application) : CryptoRepo {
 
     private val dao: CoinInfoDao = AppDatabase.getInstance(application).priceDao()
     private val mapper: CoinMapper = CoinMapper()
@@ -22,20 +20,11 @@ class CryptoRepoImpl(
     override fun getCoinList(): LiveData<List<CoinInfo>> =
         MediatorLiveData<List<CoinInfo>>().apply {
             addSource(dao.getCoinInfo()) {
-                value = it.map { dbm -> //как это работает?
+                value = it.map { dbm ->
                     mapper.mapDbmToEntity(dbm)
                 }
             }
         }
-
-//    override fun getCoinList(): LiveData<List<CoinInfo>> =
-//        MediatorLiveData<List<CoinInfo>>().apply {
-//            addSource(dao.getCoinInfo()) {
-//                it.map {dbm->
-//                    mapper.mapDbmToEntity(dbm)
-//                }
-//            }
-//        }
 
     override fun getCoin(fromSymbol: String): LiveData<CoinInfo> {
         return MediatorLiveData<CoinInfo>().apply {
