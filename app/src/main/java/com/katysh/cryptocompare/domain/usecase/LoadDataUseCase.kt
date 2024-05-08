@@ -6,6 +6,6 @@ class LoadDataUseCase(
     private val repo: CryptoRepo
 ) {
 
-    suspend operator fun invoke() = repo.loadData()
+    operator fun invoke() = repo.loadData()
 
 }

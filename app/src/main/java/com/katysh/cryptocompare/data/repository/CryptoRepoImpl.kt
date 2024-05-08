@@ -1,18 +1,19 @@
 package com.katysh.cryptocompare.data.repository
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.katysh.cryptocompare.data.database.AppDatabase
 import com.katysh.cryptocompare.data.database.CoinInfoDao
 import com.katysh.cryptocompare.data.mapper.CoinMapper
-import com.katysh.cryptocompare.data.web.ApiFactory
+import com.katysh.cryptocompare.data.workers.RefreshDataWorker
+import com.katysh.cryptocompare.data.workers.RefreshDataWorker.Companion.WORK_NAME
 import com.katysh.cryptocompare.domain.entity.CoinInfo
 import com.katysh.cryptocompare.domain.repo.CryptoRepo
-import kotlinx.coroutines.delay
 
-class CryptoRepoImpl(application: Application) : CryptoRepo {
+class CryptoRepoImpl(val application: Application) : CryptoRepo {
 
     private val dao: CoinInfoDao = AppDatabase.getInstance(application).priceDao()
     private val mapper: CoinMapper = CoinMapper()
@@ -34,19 +35,12 @@ class CryptoRepoImpl(application: Application) : CryptoRepo {
         }
     }
 
-    override suspend fun loadData() {
-        while (true) {
-            try {
-                val topCoins = ApiFactory.apiService.getTopCoinsNames(limit = 50)
-                val fSyms = mapper.mapCoinNameListToString(topCoins)
-                val coinInfoJsonContainer = ApiFactory.apiService.getCoinInfoList(fSyms = fSyms)
-                val coinInfoDtoList = mapper.mapJsonContainerToDtoList(coinInfoJsonContainer)
-                val coinInfoDbmList = coinInfoDtoList.map { mapper.mapDtoToDbm(it) }
-                Log.i("testtest", "coinInfoDbmList $coinInfoDbmList")
-                dao.insertPriceList(coinInfoDbmList)
-            } catch (e: Exception) {
-            }
-            delay(10000)
-        }
+    override fun loadData() {
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniqueWork(
+            WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            RefreshDataWorker.makeRequest()
+        )
     }
 }
