@@ -5,18 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.katysh.cryptocompare.data.database.AppDatabase
 import com.katysh.cryptocompare.data.database.CoinInfoDao
 import com.katysh.cryptocompare.data.mapper.CoinMapper
 import com.katysh.cryptocompare.data.workers.RefreshDataWorker
 import com.katysh.cryptocompare.data.workers.RefreshDataWorker.Companion.WORK_NAME
 import com.katysh.cryptocompare.domain.entity.CoinInfo
 import com.katysh.cryptocompare.domain.repo.CryptoRepo
+import javax.inject.Inject
 
-class CryptoRepoImpl(val application: Application) : CryptoRepo {
-
-    private val dao: CoinInfoDao = AppDatabase.getInstance(application).priceDao()
-    private val mapper: CoinMapper = CoinMapper()
+class CryptoRepoImpl @Inject constructor(
+    private val application: Application,
+    private val dao: CoinInfoDao,
+    private val mapper: CoinMapper
+) : CryptoRepo {
 
     override fun getCoinList(): LiveData<List<CoinInfo>> =
         MediatorLiveData<List<CoinInfo>>().apply {

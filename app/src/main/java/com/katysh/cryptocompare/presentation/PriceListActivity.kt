@@ -3,11 +3,21 @@ package com.katysh.cryptocompare.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.katysh.cryptocompare.CryptoApplication
 import com.katysh.cryptocompare.R
 import com.katysh.cryptocompare.databinding.ActivityPriceListBinding
 import com.katysh.cryptocompare.domain.entity.CoinInfo
+import javax.inject.Inject
 
 class PriceListActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as CryptoApplication).component
+    }
+
     private lateinit var viewModel: CoinViewModel
 
     private val binding by lazy {
@@ -15,9 +25,10 @@ class PriceListActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[CoinViewModel::class.java]
 
         val adapter = CoinsAdapter(this)
         adapter.onCoinClickListener = object : CoinsAdapter.OnCoinClickListener {
