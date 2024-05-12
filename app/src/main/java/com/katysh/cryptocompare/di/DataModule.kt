@@ -4,6 +4,8 @@ import android.app.Application
 import com.katysh.cryptocompare.data.database.AppDatabase
 import com.katysh.cryptocompare.data.database.CoinInfoDao
 import com.katysh.cryptocompare.data.repository.CryptoRepoImpl
+import com.katysh.cryptocompare.data.web.ApiFactory
+import com.katysh.cryptocompare.data.web.ApiService
 import com.katysh.cryptocompare.domain.repo.CryptoRepo
 import dagger.Binds
 import dagger.Module
@@ -20,6 +22,11 @@ interface DataModule {
         @Provides
         fun provideDao(application: Application): CoinInfoDao {
             return AppDatabase.getInstance(application).priceDao()
+        }
+
+        @Provides
+        fun provideApiService(): ApiService {
+            return ApiFactory.apiService
         }
     }
 }
